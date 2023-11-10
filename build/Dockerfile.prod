@@ -1,0 +1,22 @@
+FROM golang:1.21 AS compile
+
+ENV CGO_ENABLED=0
+ENV LOCAL_SOURCE_DIR=./catgpt
+
+WORKDIR /source
+
+COPY ${LOCAL_SOURCE_DIR}/. .
+
+#$ go mod download
+#$ CGO_ENABLED=0 go build -o path/to/resulting/binary
+
+RUN go mod download
+RUN go build -o /build/catgpt
+
+FROM gcr.io/distroless/static-debian12:latest-amd64
+
+WORKDIR /app
+
+COPY --from=compile /build/catgpt .
+
+CMD [". /catgpt"]
