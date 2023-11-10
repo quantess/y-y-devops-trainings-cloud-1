@@ -22,7 +22,7 @@ jobs:
         name: Login to Yandex Container Registry
         uses: docker/login-action@v1
         with:
-          registry: cr.yandex/crpd950roq7aogovvejc
+          registry: cr.yandex
           username: ${{ secrets.YA_USER_ID }}
           password: ${{ secrets.YA_PWD }}
       -
