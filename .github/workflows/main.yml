@@ -24,9 +24,19 @@ jobs:
         with:
           registry: cr.yandex
           username: ${{ secrets.YA_USER_ID }}
-          password: ${{ secrets.YA_PWD }}
-      - 
-        name: 'Build Inventory Image'
+          password: ${{ secrets.YA_PWD }}          
+      -
+        name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+      -
+        name: Build, tag, and push image to Yandex Cloud Container Registry
+          env:
+            CR_REGISTRY: crpd950roq7aogovvejc
+            CR_REPOSITORY: catgpt
+            IMAGE_TAG: latest
         run: |
-          docker build -f build/Dockerfile.prod --tag cr.yandex/crpd950roq7aogovvejc/catgpt:latest
-          docker push cr.yandex/crpd950roq7aogovvejc/catgpt:latest
+          docker build -f ./build/Dockerfile.prod -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
